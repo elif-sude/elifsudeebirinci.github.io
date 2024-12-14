@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+<html lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width">
+
+    <title>Elif Sude Birinci </title>
+
+  <style> /* CSS comment */
+    body { max-width: 440px; }
+    #url { width: 190px; }
+    span, #url { color: blue; }
+  </style>
+</head>
+
+<body>   <!--Modify all items marked xxx -->
+
+<h2 id="title" title="Put your name here">Elif Sude Birinci</h2>
+<p title="navigator.platform">
+  Platform: <span id="plat">xxx</span>
+</p>
+<p title="Battery level (integer)">
+  Battery level: <span id="lev">xxx</span>
+</p>
+<p title="Latitude/Longitude (4 digits)">
+  Location: <span id="loc"></span>
+</p>
+<p title="Does the URL exist?">
+  URL <input type="url" id="url" value="https://www.fsm.edu.tr" onchange="check()"> <span id="resp">OK</span>
+</p>
+<hr>
+
+<hr>
+
+<script>
+"use strict";
+
+async function init() {
+   const platformInfo = getPlatformInfo();
+   document.getElementById('plat').innerText = platformInfo;
+    // Pil seviyesi
+    if (navigator.getBattery) {
+        const battery = await navigator.getBattery();
+        document.getElementById("lev").innerText = Math.round(battery.level * 100) + "%";
+    } else {
+        document.getElementById("lev").innerText = "Battery API not supported.";
+    }
+
+    // Konum bilgisi
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            const latitude = position.coords.latitude.toFixed(4);
+            const longitude = position.coords.longitude.toFixed(4);
+            document.getElementById("loc").innerText = `${latitude}, ${longitude}`;
+        }, (error) => {
+            document.getElementById("loc").innerText = "Location unavailable.";
+        });
+    } else {
+        document.getElementById("loc").innerText = "Geolocation not supported.";
+    }
+
+    check();
+}
+
+async function check() {
+    const url = document.getElementById('url').value;
+    try {
+        const response = await fetch(url, { method: 'HEAD' });
+        if (response.ok) {
+            document.getElementById('resp').innerText = 'OK';
+        } else {
+            document.getElementById('resp').innerText = 'Hatalı';
+        }
+    } catch (error) {
+        document.getElementById('resp').innerText = 'Hatalı';
+    }
+}
+document.getElementById("title").innerText = document.title;
+
+
+function getPlatformInfo() {
+          const userAgent = navigator.userAgent;
+          let os = "Unknown OS";
+          let browser = "Unknown Browser";
+  
+        
+          if (userAgent.includes("Windows")) {
+              os = "Windows";
+          } else if (userAgent.includes("Mac")) {
+              os = "MacOS";
+          } else if (userAgent.includes("Linux")) {
+              os = "Linux";
+          }
+  
+       
+          if (userAgent.includes("Chrome")) {
+              browser = "Chrome";
+          } else if (userAgent.includes("Firefox")) {
+              browser = "Firefox";
+          } else if (userAgent.includes("Safari")) {
+              browser = "Safari";
+          } else if (userAgent.includes("Edge")) {
+              browser = "Edge";
+          }
+  
+          return `${os} - ${browser}`;
+      }
+      init();
+      
+</script>
+</body></html>
+
